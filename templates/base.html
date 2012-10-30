@@ -1,6 +1,33 @@
 {% extends "layout.html" %}
 
+{% set title = 'Qrimage' %}
+{% set navigation_bar = [
+    ('home', 'Home'),
+    ('coffee', 'Brew some coffee'),
+    ('create', 'Create a QR code'),
+    ('user_qrcodes', 'Saved QR codes'),
+] %}
+{% set active_page = active_page|default('home') -%}
+
+{% block style %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block favicons %}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+{% endblock %}
+
 {% block body_content %}
+    {% block navbar %}
+        <ul class="nav">
+        {%- for view_name, view_title in navigation_bar %}
+            <li{% if view_name == active_page %} class="active"{% endif %}><a href="{{ url_for(view_name) }}">{{ view_title }}</a></li>
+        {%- endfor %}
+        </ul>
+    {% endblock %}
+
     {% block content %}
     {% endblock %}
 {% endblock %}
+
