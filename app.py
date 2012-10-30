@@ -1,9 +1,16 @@
+import os.path
 import uuid
 
 from flask import Flask, render_template
 from flask.ext.sqlalchemy import SQLAlchemy
 
+import qrcode
+
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = \
+            'sqlite:///%s' % os.path.join(app.root_path, 'qrimage.db')
+
+db = SQLAlchemy(app)
 
 # Models
 qrcodes = db.Table('qrcodes',
@@ -16,7 +23,7 @@ class User(db.Model):
     username = db.Column(db.Unicode, unique=True)
     name = db.Column(db.Unicode)
     qrcodes = db.relationship('Qrcode', secondary=qrcodes,
-        backref=db.backref('users', lazy='dynamic'))
+                              backref=db.backref('users', lazy='dynamic'))
 
     def __init__(self, username, name):
         self.username = username
@@ -27,11 +34,17 @@ class Qrcode(db.Model):
     content = db.Column(db.Unicode, unique=True)
     filename = db.Column(db.Unicode, unique=True)
     #users = an implied column
-    
+
     def __init__(self, content):
         self.content = content
-        self.filename = os.path.join(app.instance_path, u'%s.png' % uuid.uuid4())
+        self.filename = u'%s.png' % uuid.uuid4()
+        self.save_image_file()
 
+    def save_image_file(self):
+        filename = os.path.join(app.instance_path, self.filename)
+        if not os.path.exists(filename):
+            qr = qrcode.make(self.content)
+            qr.save(filename)
 
 @app.route('/')
 def home():
