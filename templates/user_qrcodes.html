@@ -2,8 +2,16 @@
 
 {% set active_page = 'user_qrcodes' %}
 
-{% block content %}
+{% block header %}
     <div class="container">
         <h1>Saved QR codes</h1>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% for qrcode in current_user.qrcodes %}
+            <img src="{{ url_for('user_qrcode', id=qrcode.id) }}">
+        {% endfor %}
     </div>
 {% endblock %}

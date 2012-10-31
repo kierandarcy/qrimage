@@ -1,15 +1,13 @@
 {% extends "base.html" %}
 
-{% set active_page = 'coffee' %}
-
 {% block header %}
     <div class="container">
-        <h1>Brew some coffee</h1>
+        <h1>Login</h1>
     </div>
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        {{ wtf.quick_form(form) }}
+        {{ wtf.quick_form(form, action=url_for('login', next=request.args.get('next'))) }}
     </div>
 {% endblock %}

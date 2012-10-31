@@ -2,8 +2,18 @@
 
 {% set active_page = 'create' %}
 
-{% block content %}
+{% block header %}
     <div class="container">
         <h1>Create a QR code</h1>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ wtf.quick_form(form, buttons=[('submit','primary','Create'),]) }}
+
+        {% if show_last_image and g.last_image %}
+            <img src="{{ url_for('last_image') }}" width="300">
+        {% endif %}
     </div>
 {% endblock %}
