@@ -3,11 +3,12 @@
 
 {% set title = 'Qrimage' %}
 {% set navigation_bar = [
-    ('home', 'Home'),
-    ('coffee', 'Brew some coffee'),
-    ('create', 'Create a QR code'),
-    ('user_qrcodes', 'Saved QR codes'),
-] %}
+    ('home', 'Home', False),
+    ('coffee', 'Brew some coffee', False),
+    ('create', 'Create a QR code', False),
+    ('user_images', 'Saved QR codes', True),
+] -%}
+
 {% set active_page = active_page|default('home') -%}
 
 {% block style %}
@@ -15,8 +16,7 @@
     <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
 {% endblock %}
 
-{% block favicons %}
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+{% block style_navbar_padding %}
 {% endblock %}
 
 {% block body_content %}
@@ -24,7 +24,8 @@
         <div class="navbar navbar-fixed-top navbar-inverse">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <a class="btn btn-navbar" data-toggle="collapse" 
+                       data-target=".nav-collapse">
                     {%- for line in navigation_bar %}
                         <span class="icon-bar"></span>
                     {%- endfor %}
@@ -33,14 +34,26 @@
                     <a class="brand" href="{{ url_for('home') }}">{{ title }}</a>
                     <div class="nav-collapse">
                         <ul class="nav">
-                        {%- for view_name, view_title in navigation_bar %}
-                            <li{% if view_name == active_page %} class="active"{% endif %}><a href="{{ url_for(view_name) }}">{{ view_title }}</a></li>
+                        {%- for view_name, view_title, protected in navigation_bar %}
+                            <li class="
+                                {%- if view_name == active_page %}active{% endif -%}
+                                {%- if protected and not current_user.is_authenticated() %}disabled{% endif -%}
+                                ">
+                                <a href="{{ url_for(view_name) }}">{{ view_title }}</a>
+                            </li>
                         {%- endfor %}
-                        {% if current_user.is_authenticated() %}
-                            <li><a href="{{ url_for('logout') }}">Log out {{ current_user.name }}</a></li>
-                        {% else %}
-                            <li><a href="{{ url_for('login') }}">Log in</a></li>
-                        {% endif %}
+
+                        {%- if current_user.is_authenticated() %}
+                            <li>
+                                <a href="{{ url_for('logout', next=url_for(active_page)) }}">
+                                    Log out {{ current_user.name }}
+                                </a>
+                            </li>
+                        {%- else %}
+                            <li>
+                                <a href="{{ url_for('login', next=url_for(active_page)) }}">Log in</a>
+                            </li>
+                        {%- endif %}
                         </ul>
                     </div>
                 </div>
@@ -48,27 +61,34 @@
         </div>
     {% endblock %}
 
-    {% block flashes %}
-        {% with messages = get_flashed_messages(with_categories=True) %}
-            {% if messages %}
-                <div class="flashes container">
-                    {% for category, message in get_flashed_messages(with_categories=True) %}
-                        <div class="alert alert-{{ category }}">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-    {% endblock %}
+    <header class="header">
+        {% block flashes %}
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <div class="flashes container">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{% if category == 'warning' %}error{% elif category == 'info' %}info{% else %}success{% endif %}">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    &times;
+                                </button>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        {% endblock %}
 
-    <header>
-    {% block header %}
-    {% endblock %}
+        {% block header %}
+        {% endblock %}
     </header>
-
-    {% block content %}
-    {% endblock %}
+    
+    <section class="container">
+        {% block content %}
+        {% endblock %}
+    </section>
 {% endblock %}
 
+{% block favicons %}
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+{% endblock %}
