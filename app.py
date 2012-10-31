@@ -103,7 +103,7 @@ def process_qrcode(content):
 @app.before_request
 def before_request():
     g.last_image = Qrcode.query.get(session.get('last_image_id', 0))
-    
+
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -157,10 +157,16 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user:
-            login_user(user)
-            flash('You were logged in!', 'info')
-            return redirect(request.args.get('next') or url_for('home'))
-        flash('You could not be logged in.','error')
+            if login_user(user):
+                flash('You were logged in!', 'success')
+                if g.last_image:
+                    g.last_image.users.append(user)
+                    db.session.commit()
+                    flash("We added the last QR code you made to your saved list.\
+                    You're welcome.", 'info')
+                return redirect(request.args.get('next') or url_for('home'))
+            flash('You could not be logged in.','error')
+        flash('Who are you?','warning')
     return render_template('login.html', form=form)
 
 @app.route('/logout')
