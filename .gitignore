@@ -1,3 +1,5 @@
+instance/*.png
+
 *.py[co]
 
 *.db
