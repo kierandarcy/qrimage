@@ -62,7 +62,7 @@ class Qrcode(db.Model):
     def save_image_file(self):
         full_filename = os.path.join(app.instance_path, self.filename)
         if not os.path.exists(full_filename):
-            img = qrcode.make(self.content, border=1)
+            img = qrcode.make(self.content)
             img.save(full_filename)
 
 # Forms
