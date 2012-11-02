@@ -17,8 +17,16 @@
 
         <aside class="span4">
             {% if show_last_image and g.last_image %}
-                <a href="{{ url_for('last_image', download='+') }}" title="{{ g.last_image.content }}"><img class="qrcode-image" src="{{ url_for('last_image') }}" title="Download QR code linking to {{ g.last_image.content }}" width="300"></a>
-                <p>QR code image for <a href="{{ g.last_image.content }}" title="{{ g.last_image.content }}">{{ g.last_image.content }}</a></p>
+                <a href="{{ url_for('last_image', download='+') }}" title="{{ g.last_image.content }}">
+                    <img class="qrcode-image" src="{{ url_for('last_image') }}" 
+                         title="Download QR code linking to {{ g.last_image.content }}" width="300">
+                </a>
+                <p>
+                    QR code image for 
+                    <a href="{{ g.last_image.content }}" title="{{ g.last_image.content }}">
+                        {{ g.last_image.content }}
+                    </a>
+                </p>
             {% endif %}
 
             <h3>
