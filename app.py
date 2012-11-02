@@ -1,4 +1,4 @@
-import os.path
+import os
 import uuid
 
 from flask import Flask, request, render_template, url_for, session, g, abort,\
@@ -198,4 +198,6 @@ def i_am_a_teapot(error):
     return render_template('errors.html', error=error), 418
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', debug=True)
+    # Bind to PORT if defined, otherwise default to 5000.
+    port = int(os.environ.get('PORT', 5000))
+    app.run('0.0.0.0', port=port, debug=True)
