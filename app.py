@@ -7,6 +7,7 @@ from flask.ext.login import LoginManager, login_required, login_user,\
                             logout_user, UserMixin, AnonymousUser, current_user
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.bootstrap import Bootstrap
+from flask.ext.heroku import Heroku
 from flask.ext.wtf import Form, URL, Required, TextField
 from flask.ext.wtf.html5 import URLField
 
@@ -14,11 +15,12 @@ import qrcode
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_very_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = \
-                      'sqlite:///%s' % os.path.join(app.root_path, 'qrimage.db')
+#app.config['SQLALCHEMY_DATABASE_URI'] = \
+#                      'sqlite:///%s' % os.path.join(app.root_path, 'qrimage.db')
 
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
+heroku = Heroku(app)
 
 login_manager = LoginManager()
 login_manager.setup_app(app)
@@ -196,4 +198,4 @@ def i_am_a_teapot(error):
     return render_template('errors.html', error=error), 418
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run('0.0.0.0', debug=True)
