@@ -19,7 +19,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = \
 
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
-heroku = Heroku(app)
 
 login_manager = LoginManager()
 login_manager.setup_app(app)
