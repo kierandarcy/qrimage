@@ -4,7 +4,7 @@ import uuid
 from flask import Flask, request, render_template, url_for, session, g, abort,\
                   redirect, flash, send_from_directory, after_this_request
 from flask.ext.login import LoginManager, login_required, login_user,\
-                            logout_user, UserMixin, AnonymousUser, current_user
+                            logout_user, UserMixin, current_user
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.wtf import Form, URL, Required, TextField
