@@ -1,4 +1,4 @@
-import os
+import os.path
 import uuid
 
 from flask import Flask, request, render_template, url_for, session, g, abort,\
